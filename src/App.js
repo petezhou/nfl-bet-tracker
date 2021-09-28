@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import Game from './Game.js'
 import './App.css';
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [currentScores, setCurrentScores] = useState(0);
+  const [currentScores, setCurrentScores] = useState(undefined);
 
   useEffect(() => {
-    fetch('/time').then(res => res.json()).then(data => {
-      setCurrentTime(data.time);
-    })
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("Interval triggered");
-      fetch('/getAllScores').then(res => res.json()).then(data => {
-        setCurrentScores(JSON.parse(data.DAL));
-      });
-    }, 30 * 1000); // refresh every 30 seconds
+    getAllScores();
+    const interval = setInterval(getAllScores, 30 * 1000); // refresh every 30 seconds
     return () => clearInterval(interval);
   }, []);
 
-  console.log(currentScores);
+  const getAllScores = () => {
+    fetch('/getAllScores').then(res => res.json()).then(data => {
+        setCurrentScores(data);
+      });
+  }
 
-  return (
+  if (!currentScores) {
+    return null;
+  } else {
+    const scoresList = Object.values(currentScores);
+
+    return (
     <div className="App">
-      <header className="App-header">
-        <p>The current time is {currentTime}</p>
-      </header>
+      <h1 className="App-header">NFL Scores </h1>
+      <div>
+         { scoresList.map((item, index) => (<Game className="Game" key={index} item={JSON.parse(item)}/>)) }
+      </div>
     </div>
   );
+  }
 }
 
 export default App;
+
