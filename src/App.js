@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Container, Row } from 'react-bootstrap'
+import { Container, Row } from 'react-bootstrap/'
 import Game from './game/Game.js'
 
 function App() {
-  const [currentScores, setCurrentScores] = useState(undefined);
+  const [currentScores, setCurrentScores] = useState([]);
 
   useEffect(() => {
     getAllScores();
@@ -22,15 +22,16 @@ function App() {
   if (!currentScores) {
     return null;
   } else {
-    const scoresList = Object.values(currentScores);
-
+    console.log(currentScores);
     return (
     <div className="App">
+      <h1 className="header">My Bets</h1>
+      <hr />
       <h1 className="header">NFL Scores </h1>
       <Container direction="horizontal">
         <Row>
-          { scoresList.map((item, index) => (<Game className="Game" key={index} item={JSON.parse(item)}/>)) }
-         </Row>
+          { currentScores.map((item, index) => (<Game className="Game" key={index} item={item}/>)) }
+        </Row>
       </Container>
     </div>
   );

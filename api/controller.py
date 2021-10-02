@@ -2,6 +2,8 @@ import time
 from flask import Flask
 import requests
 import json
+import datetime
+import time
 from model.teamInfo import TeamInfo
 from model.team import Team
 from model.game import Game
@@ -22,7 +24,8 @@ def get_all_scores():
 def fetchLiveScoresFromESPN():
 	res = requests.get('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard')
 	resObj = json.loads(res.text)
-	allScores = {}
+	scoresObject = {}
+	allScores = []
 	for i in range(len(resObj['events'])):
 		homeCity = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['location']
 		homeName = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['shortDisplayName']
@@ -42,8 +45,16 @@ def fetchLiveScoresFromESPN():
 		awayScore = resObj['events'][i]['competitions'][0]['competitors'][1]['score']
 		awayTeam = Team(awayTeamInfo, awayScore, False)
 
-		game = Game(homeTeam, awayTeam)
-		allScores[homeAbbr] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
+		date = resObj['events'][i]['date']
+		timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%dT%H:%MZ").timetuple())
+		gameStatus = resObj['events'][i]['status']['type']['description']
+		gameClock = resObj['events'][i]['status']['displayClock']
+		quarter = resObj['events'][i]['status']['period']
+		game = Game(homeTeam, awayTeam, gameStatus, timestamp, gameClock, quarter)
 
-	return allScores
+		scoresObject[homeAbbr] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
+		allScores.append(game)
 
+
+	allScores.sort(key=lambda x: x.date)
+	return json.dumps(allScores, default=lambda o: o.__dict__, indent=4)
