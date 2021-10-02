@@ -1,3 +1,23 @@
-.App {
+* {
+  font-family: arial,sans-serif;
+}
+
+.header {
   text-align: center;
+  margin: 20px;
+  font-weight: 800;
+}
+
+.display-game {
+  margin: 10px;
+  width: 200px;
+  padding: 7px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.team-color {
+  height: 20px;
+  width: 10px;
+  marginTop: 2px;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
 }

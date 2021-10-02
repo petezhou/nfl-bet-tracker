@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Game from './Game.js'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { Container, Row } from 'react-bootstrap'
+import Game from './game/Game.js'
 
 function App() {
   const [currentScores, setCurrentScores] = useState(undefined);
@@ -24,10 +26,12 @@ function App() {
 
     return (
     <div className="App">
-      <h1 className="App-header">NFL Scores </h1>
-      <div>
-         { scoresList.map((item, index) => (<Game className="Game" key={index} item={JSON.parse(item)}/>)) }
-      </div>
+      <h1 className="header">NFL Scores </h1>
+      <Container direction="horizontal">
+        <Row>
+          { scoresList.map((item, index) => (<Game className="Game" key={index} item={JSON.parse(item)}/>)) }
+         </Row>
+      </Container>
     </div>
   );
   }
