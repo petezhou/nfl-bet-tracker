@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Container, Row } from 'react-bootstrap/'
 import Game from './game/Game.js'
+import CreateBetModal from './mybets/CreateBetModal.js'
 
 function App() {
   const [currentScores, setCurrentScores] = useState([]);
@@ -19,21 +20,21 @@ function App() {
       });
   }
 
-  if (!currentScores) {
+  if (currentScores.length == 0) {
     return null;
   } else {
-    console.log(currentScores);
     return (
-    <div className="App">
-      <h1 className="header">My Bets</h1>
-      <hr />
-      <h1 className="header">NFL Scores </h1>
-      <Container direction="horizontal">
-        <Row>
-          { currentScores.map((item, index) => (<Game className="Game" key={index} item={item}/>)) }
-        </Row>
-      </Container>
-    </div>
+      <div className="App">
+        <Container direction="horizontal">
+          <h1 className="header">My Bets</h1>
+          <CreateBetModal validGames={currentScores.filter(game => game.gameStatus !== "Final")} />
+          <hr />
+          <h1 className="header">NFL Scores </h1>
+          <Row>
+            { currentScores.map((item, index) => (<Game className="Game" key={index} item={item}/>)) }
+          </Row>
+        </Container>
+      </div>
   );
   }
 }

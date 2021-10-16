@@ -11,7 +11,7 @@ function Game(props) {
 
 	// before the game
 	if (item.gameStatus === "Scheduled") {
-		const date = new Date((item.date - 14400) * 1000 );
+		const date = new Date((item.date - 14400) * 1000 ); // a terrible EST hack
 		topText = `${date.toLocaleString('default', { month: 'short'})} ${date.getDate()}`
 		bottomText = `${date.getHours() % 12}:${date.getMinutes()<10?'0':''}${date.getMinutes()} PM`
 	} else if (item.gameStatus === "Final") {
@@ -24,8 +24,8 @@ function Game(props) {
  
 	return (
 		<div className='display-game'>
-			<Team item={item.home} text={topText} gameStatus={item.gameStatus}/>
-			<Team item={item.away} text={bottomText} gameStatus={item.gameStatus}/>
+			<Team item={item.away} text={topText} gameStatus={item.gameStatus}/>
+			<Team item={item.home} text={bottomText} gameStatus={item.gameStatus}/>
 		</div>
 	);
 }

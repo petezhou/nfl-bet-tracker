@@ -27,32 +27,35 @@ def fetchLiveScoresFromESPN():
 	scoresObject = {}
 	allScores = []
 	for i in range(len(resObj['events'])):
+		homeDisplayName = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['displayName']
 		homeCity = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['location']
 		homeName = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['shortDisplayName']
 		homeAbbr = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['abbreviation']
 		homeColor = resObj['events'][i]['competitions'][0]['competitors'][0]['team']['color']
 		homeRecord = resObj['events'][i]['competitions'][0]['competitors'][0]['records'][0]['summary']
-		homeTeamInfo = TeamInfo(homeCity, homeName, homeAbbr, homeColor, homeRecord)
+		homeTeamInfo = TeamInfo(homeDisplayName, homeCity, homeName, homeAbbr, homeColor, homeRecord)
 		homeScore = resObj['events'][i]['competitions'][0]['competitors'][0]['score']
 		homeTeam = Team(homeTeamInfo, homeScore, True)
 
+		awayDisplayName = resObj['events'][i]['competitions'][0]['competitors'][1]['team']['displayName']
 		awayCity = resObj['events'][i]['competitions'][0]['competitors'][1]['team']['location']
 		awayName = resObj['events'][i]['competitions'][0]['competitors'][1]['team']['shortDisplayName']
 		awayAbbr = resObj['events'][i]['competitions'][0]['competitors'][1]['team']['abbreviation']
 		awayColor = resObj['events'][i]['competitions'][0]['competitors'][1]['team']['color']
 		awayRecord = resObj['events'][i]['competitions'][0]['competitors'][1]['records'][0]['summary']
-		awayTeamInfo = TeamInfo(awayCity, awayName, awayAbbr, awayColor, awayRecord)
+		awayTeamInfo = TeamInfo(awayDisplayName, awayCity, awayName, awayAbbr, awayColor, awayRecord)
 		awayScore = resObj['events'][i]['competitions'][0]['competitors'][1]['score']
 		awayTeam = Team(awayTeamInfo, awayScore, False)
 
+		eventName = resObj['events'][i]['name']
 		date = resObj['events'][i]['date']
 		timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%dT%H:%MZ").timetuple())
 		gameStatus = resObj['events'][i]['status']['type']['description']
 		gameClock = resObj['events'][i]['status']['displayClock']
 		quarter = resObj['events'][i]['status']['period']
-		game = Game(homeTeam, awayTeam, gameStatus, timestamp, gameClock, quarter)
+		game = Game(eventName, homeTeam, awayTeam, gameStatus, timestamp, gameClock, quarter)
 
-		scoresObject[homeAbbr] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
+		scoresObject[homeDisplayName] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
 		allScores.append(game)
 
 

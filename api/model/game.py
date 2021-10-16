@@ -1,5 +1,6 @@
 class Game:
-	def __init__(self, home, away, gameStatus, date, gameClock, quarter):
+	def __init__(self, name, home, away, gameStatus, date, gameClock, quarter):
+		self.name = name
 		self.home = home
 		self.away = away
 		self.gameStatus = gameStatus;
