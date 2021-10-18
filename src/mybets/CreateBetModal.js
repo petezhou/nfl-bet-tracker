@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import "react-widgets/styles.css";
 import { 
 	Container, Row, Button,
@@ -25,6 +26,7 @@ function CreateBetModal(props) {
 
   const handleClose = () =>{ 
   	setBetList([]);
+  	setSpread(0);
   	setOdds(0);
   	setStake(0);
   	setShow(false);
@@ -36,7 +38,12 @@ function CreateBetModal(props) {
   		odds,
   		stake
   	}
-  	// TODO: make axios call POST
+  	axios.post(`/postBets`, { betCard })
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      })
+
   	console.log(betCard);
   	handleClose();
   };

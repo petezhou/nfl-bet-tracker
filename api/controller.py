@@ -1,5 +1,5 @@
 import time
-from flask import Flask
+from flask import Flask, request
 import requests
 import json
 import datetime
@@ -10,6 +10,9 @@ from model.game import Game
 
 app = Flask(__name__)
 
+db = []
+scores_data = {}
+
 @app.route('/time')
 def get_current_time():
 	return {'time': time.time()}
@@ -18,6 +21,22 @@ def get_current_time():
 def get_all_scores():
 	return fetchLiveScoresFromESPN()
 	
+@app.route('/postBets', methods = ['POST'])
+def post_bets():
+	db.append(request.json);
+	return {'Status Code': '200'}
+
+@app.route('/getBetsByUser')
+def get_bets_by_user():
+	res = []
+	for entry in db:
+		userBet = {}
+		# TODO: add stuff like isWinningBet(), possible payout, etc.
+		res.append(userBet);
+	#TODO: put net profits so far at the top level here
+	return {'data': res};
+
+
 
 # Private Helpers #
 
@@ -55,9 +74,16 @@ def fetchLiveScoresFromESPN():
 		quarter = resObj['events'][i]['status']['period']
 		game = Game(eventName, homeTeam, awayTeam, gameStatus, timestamp, gameClock, quarter)
 
-		scoresObject[homeDisplayName] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
+		scoresObject[eventName] = json.dumps(game, default=lambda o: o.__dict__, indent=4)
 		allScores.append(game)
 
-
+	scores_data = scoresObject
 	allScores.sort(key=lambda x: x.date)
 	return json.dumps(allScores, default=lambda o: o.__dict__, indent=4)
+
+
+def isWinningBet(bet):
+	pass
+
+
+

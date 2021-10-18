@@ -7,6 +7,7 @@ import CreateBetModal from './mybets/CreateBetModal.js'
 
 function App() {
   const [currentScores, setCurrentScores] = useState([]);
+  const [currentBets, setCurrentBets] = useState([])
 
   useEffect(() => {
     getAllScores();
@@ -14,9 +15,22 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    getUserBets();
+    const interval = setInterval(getUserBets, 30 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const getAllScores = () => {
     fetch('/getAllScores').then(res => res.json()).then(data => {
         setCurrentScores(data);
+      });
+  }
+
+  const getUserBets = () => {
+    fetch('/getBetsByUser').then(res => res.json()).then(data => {
+        setCurrentBets(data);
+        console.log(data);
       });
   }
 
@@ -28,6 +42,8 @@ function App() {
         <Container direction="horizontal">
           <h1 className="header">My Bets</h1>
           <CreateBetModal validGames={currentScores.filter(game => game.gameStatus !== "Final")} />
+          <div style={{ 'minHeight': '100px'}}>
+          </div>
           <hr />
           <h1 className="header">NFL Scores </h1>
           <Row>
